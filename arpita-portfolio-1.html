@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arpita Mondal — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================
+       CSS CUSTOM PROPERTIES — THEME SYSTEM
+    ============================================ */
+    :root {
+      --bg:          #0d0f14;
+      --bg2:         #13161e;
+      --bg3:         #1a1e28;
+      --surface:     rgba(255,255,255,0.04);
+      --surface-h:   rgba(255,255,255,0.08);
+      --border:      rgba(255,255,255,0.08);
+      --border-h:    rgba(255,255,255,0.18);
+      --text:        #e8eaf0;
+      --text-m:      #8b90a0;
+      --text-s:      #5c6070;
+      --accent:      #c8a96e;     /* warm gold */
+      --accent2:     #8fc8b0;     /* sage green */
+      --accent3:     #c87da0;     /* dusty rose */
+      --glow:        rgba(200,169,110,0.15);
+      --glow2:       rgba(143,200,176,0.12);
+      --radius:      16px;
+      --radius-sm:   10px;
+      --font-display:'Cormorant Garamond', Georgia, serif;
+      --font-body:   'Outfit', system-ui, sans-serif;
+      --transition:  0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] {
+      --bg:          #f5f3ee;
+      --bg2:         #ede9e0;
+      --bg3:         #e4dfd3;
+      --surface:     rgba(0,0,0,0.04);
+      --surface-h:   rgba(0,0,0,0.08);
+      --border:      rgba(0,0,0,0.10);
+      --border-h:    rgba(0,0,0,0.22);
+      --text:        #1e1c18;
+      --text-m:      #5a5648;
+      --text-s:      #908a7e;
+      --glow:        rgba(200,169,110,0.2);
+      --glow2:       rgba(143,200,176,0.18);
+    }
+
+    /* ============================================
+       RESET & BASE
+    ============================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      transition: background var(--transition), color var(--transition);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ============================================
+       CANVAS BACKGROUND
+    ============================================ */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+
+    /* ============================================
+       SCROLLBAR
+    ============================================ */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ============================================
+       UTILITY
+    ============================================ */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    .section { padding: 110px 0; position: relative; z-index: 1; }
+
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .section-desc {
+      font-size: 1rem;
+      color: var(--text-m);
+      max-width: 520px;
+      line-height: 1.75;
+    }
+
+    /* Reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ============================================
+       NAVBAR
+    ============================================ */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 18px 0;
+      transition: background var(--transition), padding var(--transition), backdrop-filter var(--transition);
+    }
+
+    .navbar.scrolled {
+      background: rgba(13,15,20,0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    [data-theme="light"] .navbar.scrolled {
+      background: rgba(245,243,238,0.88);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.01em;
+    }
+
+    .nav-logo span { color: var(--text); font-weight: 300; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-m);
+      letter-spacing: 0.04em;
+      transition: color var(--transition);
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width var(--transition);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--accent); }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      width: 42px; height: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      cursor: pointer;
+      position: relative;
+      transition: background var(--transition);
+      flex-shrink: 0;
+    }
+
+    .theme-toggle::before {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      transition: transform var(--transition);
+    }
+
+    [data-theme="light"] .theme-toggle::before { transform: translateX(18px); }
+
+    .theme-toggle-label {
+      font-size: 0.72rem;
+      color: var(--text-s);
+      white-space: nowrap;
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      border: none;
+      background: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all var(--transition);
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile Nav */
+    .mobile-nav {
+      position: fixed;
+      top: 0; right: -100%;
+      width: min(320px, 85vw);
+      height: 100vh;
+      background: var(--bg2);
+      border-left: 1px solid var(--border);
+      z-index: 999;
+      padding: 80px 36px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .mobile-nav.open { right: 0; }
+
+    .mobile-nav a {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--text-m);
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      transition: color var(--transition), padding var(--transition);
+    }
+
+    .mobile-nav a:hover { color: var(--accent); padding-left: 10px; }
+
+    .mobile-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition);
+    }
+
+    .mobile-overlay.active { opacity: 1; pointer-events: all; }
+
+    /* ============================================
+       HERO SECTION
+    ============================================ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      padding: 100px 0 60px;
+    }
+
+    .hero-content { max-width: 700px; }
+
+    .hero-greeting {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-greeting::before {
+      content: '';
+      width: 40px; height: 1px;
+      background: var(--accent2);
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 9vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .hero-name .highlight {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .hero-typed {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-m);
+      margin-bottom: 28px;
+      min-height: 2.2rem;
+    }
+
+    .hero-typed .cursor {
+      display: inline-block;
+      width: 2px; height: 1.2em;
+      background: var(--accent);
+      margin-left: 3px;
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--text-m);
+      line-height: 1.8;
+      max-width: 520px;
+      margin-bottom: 44px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0d0f14;
+    }
+
+    .btn-primary:hover {
+      background: var(--text);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 36px rgba(200,169,110,0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border-h);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-s);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      animation: bounce 2.5s ease-in-out infinite;
+    }
+
+    .scroll-hint::after {
+      content: '';
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(-8px); }
+    }
+
+    /* ============================================
+       ABOUT SECTION
+    ============================================ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+      margin-top: 60px;
+    }
+
+    .about-text p {
+      color: var(--text-m);
+      line-height: 1.85;
+      margin-bottom: 18px;
+      font-size: 1rem;
+    }
+
+    .about-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--glow), transparent 60%);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .info-card:hover { border-color: var(--border-h); transform: translateX(6px); }
+    .info-card:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      width: 48px; height: 48px;
+      background: var(--surface-h);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+    }
+
+    .card-body h4 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .card-body p {
+      font-size: 0.88rem;
+      color: var(--text-m);
+      line-height: 1.55;
+    }
+
+    /* ============================================
+       SKILLS SECTION
+    ============================================ */
+    .skills-bg {
+      background: var(--bg2);
+      position: relative;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 60px;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 2px;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .skill-card.visible::after { width: var(--skill-pct); }
+
+    .skill-card:hover {
+      border-color: var(--border-h);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px var(--glow);
+    }
+
+    .skill-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .skill-emoji { font-size: 1.8rem; }
+
+    .skill-pct-label {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .skill-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .skill-bar-track {
+      height: 4px;
+      background: var(--surface-h);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+    }
+
+    .skill-card.visible .skill-bar-fill { width: var(--skill-pct); }
+
+    /* ============================================
+       PROJECTS SECTION
+    ============================================ */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      margin-top: 60px;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px var(--glow);
+    }
+
+    .project-thumb {
+      height: 180px;
+      background: linear-gradient(135deg, var(--bg3), var(--bg2));
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .project-thumb-inner {
+      width: 70%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+
+    .mock-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      margin-bottom: 8px;
+    }
+
+    .mock-bar.accent { background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 60%; }
+    .mock-bar.s1 { width: 80%; }
+    .mock-bar.s2 { width: 55%; }
+    .mock-bar.s3 { width: 70%; opacity: 0.5; }
+
+    .mock-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .mock-check {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .mock-check.done { background: var(--accent2); }
+    .mock-check.todo { background: var(--border); }
+    .mock-line { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+    .mock-line.done { background: var(--accent2); opacity: 0.5; }
+
+    .project-body { padding: 26px; flex: 1; display: flex; flex-direction: column; }
+
+    .project-name {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .project-desc {
+      font-size: 0.9rem;
+      color: var(--text-m);
+      line-height: 1.7;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 4px 12px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      color: var(--text-m);
+      background: var(--surface);
+    }
+
+    .project-links {
+      display: flex;
+      gap: 12px;
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all var(--transition);
+      border: 1px solid var(--border);
+      color: var(--text-m);
+    }
+
+    .project-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    .project-link.primary {
+      background: var(--accent);
+      color: #0d0f14;
+      border-color: var(--accent);
+    }
+
+    .project-link.primary:hover {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    /* ============================================
+       CONTACT SECTION
+    ============================================ */
+    .contact-bg { background: var(--bg2); }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 60px;
+      margin-top: 60px;
+    }
+
+    .contact-info h3 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .contact-info p {
+      font-size: 0.93rem;
+      color: var(--text-m);
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      color: var(--text-m);
+      font-size: 0.9rem;
+    }
+
+    .contact-icon {
+      width: 40px; height: 40px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      transition: all var(--transition);
+    }
+
+    .contact-item:hover .contact-icon {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Contact Form */
+    .contact-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-m);
+      margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 13px 16px;
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      color: var(--text);
+      outline: none;
+      transition: all var(--transition);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--glow);
+    }
+
+    .form-group input.error,
+    .form-group textarea.error {
+      border-color: var(--accent3);
+    }
+
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-error { font-size: 0.78rem; color: var(--accent3); margin-top: 5px; display: none; }
+    .form-error.visible { display: block; }
+
+    .form-submit {
+      width: 100%;
+      padding: 15px;
+      background: var(--accent);
+      border: none;
+      border-radius: 50px;
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #0d0f14;
+      cursor: pointer;
+      transition: all var(--transition);
+      letter-spacing: 0.04em;
+    }
+
+    .form-submit:hover {
+      background: var(--text);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px var(--glow);
+    }
+
+    .form-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* Success Message */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 32px;
+    }
+
+    .success-msg.visible { display: block; animation: fadeIn 0.5s ease; }
+
+    .success-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      animation: pop 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(0); }
+      70%  { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .success-msg h3 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .success-msg p { color: var(--text-m); font-size: 0.92rem; }
+
+    /* ============================================
+       FOOTER
+    ============================================ */
+    .footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .social-btn {
+      width: 42px; height: 42px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: var(--text-m);
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+
+    .social-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0d0f14;
+      transform: translateY(-4px);
+    }
+
+    .footer-contact {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .footer-contact a {
+      font-size: 0.85rem;
+      color: var(--text-m);
+      transition: color var(--transition);
+    }
+
+    .footer-contact a:hover { color: var(--accent); }
+
+    .footer-copy {
+      font-size: 0.78rem;
+      color: var(--text-s);
+    }
+
+    .footer-copy span { color: var(--accent3); }
+
+    /* ============================================
+       RESPONSIVE
+    ============================================ */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .skills-grid { grid-template-columns: repeat(2, 1fr); }
+      .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+    }
+
+    @media (max-width: 600px) {
+      .section { padding: 80px 0; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .hero-cta { flex-direction: column; }
+      .btn { justify-content: center; }
+      .contact-form { padding: 24px; }
+      .project-links { flex-direction: column; }
+      .footer-contact { flex-direction: column; gap: 10px; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Particle Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ===========================
+       NAVBAR
+  =========================== -->
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <a href="#home" class="nav-logo" aria-label="Arpita Mondal — Home">
+        Arpita<span> Mondal</span>
+      </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="#home"     class="nav-link active">Home</a></li>
+        <li><a href="#about"    class="nav-link">About</a></li>
+        <li><a href="#skills"   class="nav-link">Skills</a></li>
+        <li><a href="#projects" class="nav-link">Projects</a></li>
+        <li><a href="#contact"  class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <span class="theme-toggle-label" aria-hidden="true">☀</span>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode" role="switch" aria-checked="true"></button>
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-overlay" id="mobileOverlay" role="presentation"></div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+    <a href="#home"     class="mobile-nav-link">Home</a>
+    <a href="#about"    class="mobile-nav-link">About</a>
+    <a href="#skills"   class="mobile-nav-link">Skills</a>
+    <a href="#projects" class="mobile-nav-link">Projects</a>
+    <a href="#contact"  class="mobile-nav-link">Contact</a>
+  </nav>
+
+  <!-- ===========================
+       HERO SECTION
+  =========================== -->
+  <section class="hero" id="home" aria-label="Introduction">
+    <div class="container">
+      <div class="hero-content">
+
+        <p class="hero-greeting reveal">Welcome to my portfolio</p>
+
+        <h1 class="hero-name reveal reveal-delay-1">
+          Hi, I'm<br>
+          <span class="highlight">Arpita</span> Mondal
+        </h1>
+
+        <div class="hero-typed reveal reveal-delay-2" aria-live="polite">
+          <span id="typed-text"></span><span class="cursor" aria-hidden="true"></span>
+        </div>
+
+        <p class="hero-desc reveal reveal-delay-3">
+          A Political Science student with a passion for creativity, technology, and
+          making an impact — one project, one student, one idea at a time.
+        </p>
+
+        <div class="hero-cta reveal reveal-delay-4">
+          <a href="#projects" class="btn btn-primary" aria-label="View my projects">
+            ✦ View Projects
+          </a>
+          <a href="#contact" class="btn btn-outline" aria-label="Contact me">
+            ✉ Contact Me
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true">scroll</div>
+  </section>
+
+  <!-- ===========================
+       ABOUT SECTION
+  =========================== -->
+  <section class="section" id="about" aria-label="About me">
+    <div class="container">
+
+      <p class="section-label reveal">Get to know me</p>
+      <h2 class="section-title reveal reveal-delay-1">About <em>Me</em></h2>
+
+      <div class="about-grid">
+        <div class="about-text reveal reveal-delay-2">
+          <p>
+            I'm <strong>Arpita Mondal</strong>, a dedicated student pursuing a
+            <strong>BA Major in Political Science</strong>. Beyond academics,
+            I've found a deep love for technology and creative expression.
+          </p>
+          <p>
+            I enjoy building simple web projects that solve real problems,
+            and I work as a <strong>private tutor</strong>, helping students
+            unlock their potential every day.
+          </p>
+          <p>
+            I believe in continuous growth — whether it's learning a new skill,
+            teaching what I know, or expressing myself through dance and music.
+          </p>
+        </div>
+
+        <div class="about-cards">
+          <div class="info-card reveal reveal-delay-2">
+            <div class="card-icon" aria-hidden="true">🎓</div>
+            <div class="card-body">
+              <h4>Education</h4>
+              <p>BA Major in Political Science — passionate about governance, society, and how the world works.</p>
+            </div>
+          </div>
+
+          <div class="info-card reveal reveal-delay-3">
+            <div class="card-icon" aria-hidden="true">📚</div>
+            <div class="card-body">
+              <h4>Work — Private Tutor</h4>
+              <p>Guiding and mentoring students with patience and creativity, making complex topics simple and engaging.</p>
+            </div>
+          </div>
+
+          <div class="info-card reveal reveal-delay-4">
+            <div class="card-icon" aria-hidden="true">🎵</div>
+            <div class="card-body">
+              <h4>Hobbies</h4>
+              <p>Dancing to express what words can't say, and listening to music that fuels creativity and calm.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===========================
+       SKILLS SECTION
+  =========================== -->
+  <section class="section skills-bg" id="skills" aria-label="My skills">
+    <div class="container">
+
+      <p class="section-label reveal">What I bring</p>
+      <h2 class="section-title reveal reveal-delay-1">My <em>Skills</em></h2>
+      <p class="section-desc reveal reveal-delay-2">
+        A mix of technical foundations and soft skills that make me effective
+        as both a creator and an educator.
+      </p>
+
+      <div class="skills-grid">
+        <!-- HTML -->
+        <div class="skill-card reveal reveal-delay-1" style="--skill-pct: 82%" aria-label="HTML skill 82%">
+          <div class="skill-top">
+            <span class="skill-emoji" aria-hidden="true">🌐</span>
+            <span class="skill-pct-label">82%</span>
+          </div>
+          <p class="skill-name">HTML</p>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+
+        <!-- CSS -->
+        <div class="skill-card reveal reveal-delay-2" style="--skill-pct: 75%" aria-label="CSS skill 75%">
+          <div class="skill-top">
+            <span class="skill-emoji" aria-hidden="true">🎨</span>
+            <span class="skill-pct-label">75%</span>
+          </div>
+          <p class="skill-name">CSS</p>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+
+        <!-- JavaScript -->
+        <div class="skill-card reveal reveal-delay-3" style="--skill-pct: 62%" aria-label="JavaScript skill 62%">
+          <div class="skill-top">
+            <span class="skill-emoji" aria-hidden="true">⚡</span>
+            <span class="skill-pct-label">62%</span>
+          </div>
+          <p class="skill-name">JavaScript</p>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+
+        <!-- Communication -->
+        <div class="skill-card reveal reveal-delay-4" style="--skill-pct: 90%" aria-label="Communication skill 90%">
+          <div class="skill-top">
+            <span class="skill-emoji" aria-hidden="true">🗣️</span>
+            <span class="skill-pct-label">90%</span>
+          </div>
+          <p class="skill-name">Communication</p>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+
+        <!-- Teaching -->
+        <div class="skill-card reveal reveal-delay-5" style="--skill-pct: 88%" aria-label="Teaching skill 88%">
+          <div class="skill-top">
+            <span class="skill-emoji" aria-hidden="true">🧑‍🏫</span>
+            <span class="skill-pct-label">88%</span>
+          </div>
+          <p class="skill-name">Teaching</p>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+
+        <!-- Creativity -->
+        <div class="skill-card reveal reveal-delay-5" style="--skill-pct: 85%" aria-label="Creativity skill 85%">
+          <div class="skill-top">
+            <span class="skill-emoji" aria-hidden="true">💡</span>
+            <span class="skill-pct-label">85%</span>
+          </div>
+          <p class="skill-name">Creativity</p>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===========================
+       PROJECTS SECTION
+  =========================== -->
+  <section class="section" id="projects" aria-label="My projects">
+    <div class="container">
+
+      <p class="section-label reveal">What I've built</p>
+      <h2 class="section-title reveal reveal-delay-1">My <em>Projects</em></h2>
+      <p class="section-desc reveal reveal-delay-2">
+        Each project is a step forward — built with purpose, learning, and care.
+      </p>
+
+      <div class="projects-grid">
+
+        <!-- To Do App -->
+        <article class="project-card reveal reveal-delay-2" aria-label="To Do App project">
+          <!-- Mock UI Thumbnail -->
+          <div class="project-thumb" aria-hidden="true">
+            <div class="project-thumb-inner">
+              <div class="mock-bar accent"></div>
+              <div style="height:8px"></div>
+              <div class="mock-item"><div class="mock-check done"></div><div class="mock-line done"></div></div>
+              <div class="mock-item"><div class="mock-check done"></div><div class="mock-line done"></div></div>
+              <div class="mock-item"><div class="mock-check todo"></div><div class="mock-line s1"></div></div>
+              <div class="mock-item"><div class="mock-check todo"></div><div class="mock-line s2"></div></div>
+              <div class="mock-item"><div class="mock-check todo"></div><div class="mock-line s3"></div></div>
+            </div>
+          </div>
+
+          <div class="project-body">
+            <h3 class="project-name">To Do App ✓</h3>
+            <p class="project-desc">
+              A clean and responsive task management app made using HTML, CSS, and JavaScript.
+              Features include adding tasks, marking them complete, and deleting them — all with
+              a polished, minimal interface.
+            </p>
+            <div class="project-tags">
+              <span class="tag">HTML</span>
+              <span class="tag">CSS</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">Responsive</span>
+            </div>
+            <div class="project-links">
+              <!-- Paste Project Link Here -->
+              <a
+                href="https://todo-app-new-xi-blond.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="project-link primary"
+                aria-label="View live demo of To Do App"
+              >
+                ↗ Live Demo
+              </a>
+              <!-- Paste GitHub Link Here -->
+              <a
+                href="https://github.com/crazylipi2026-dot/Todo-app-new"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="project-link"
+                aria-label="View GitHub repository of To Do App"
+              >
+                ⌥ GitHub
+              </a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===========================
+       CONTACT SECTION
+  =========================== -->
+  <section class="section contact-bg" id="contact" aria-label="Contact me">
+    <div class="container">
+
+      <p class="section-label reveal">Let's connect</p>
+      <h2 class="section-title reveal reveal-delay-1">Get In <em>Touch</em></h2>
+
+      <div class="contact-grid">
+
+        <!-- Contact Info -->
+        <div class="reveal reveal-delay-2">
+          <h3>I'd love to hear from you.</h3>
+          <p>
+            Whether you have a question, want to collaborate on a project,
+            or just want to say hello — my inbox is always open.
+          </p>
+
+          <div class="contact-item">
+            <div class="contact-icon" aria-hidden="true">✉</div>
+            <a href="mailto:arpitamondal85447@gmail.com">arpitamondal85447@gmail.com</a>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon" aria-hidden="true">☎</div>
+            <a href="tel:+919635816967">+91 9635816967</a>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon" aria-hidden="true">📍</div>
+            <span>West Bengal, India</span>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form reveal reveal-delay-3" role="region" aria-label="Contact form">
+          <form id="contactForm" novalidate>
+            <!-- Success message (hidden initially) -->
+            <div class="success-msg" id="successMsg" aria-live="polite">
+              <div class="success-icon">🎉</div>
+              <h3>Message Sent!</h3>
+              <p>Thank you for reaching out. I'll get back to you soon!</p>
+            </div>
+
+            <div id="formFields">
+              <div class="form-group">
+                <label for="contactName">Your Name</label>
+                <input
+                  type="text"
+                  id="contactName"
+                  name="name"
+                  placeholder="e.g. Rahul Sharma"
+                  autocomplete="name"
+                  aria-required="true"
+                />
+                <span class="form-error" id="nameError" role="alert">Please enter your name.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="contactEmail">Email Address</label>
+                <input
+                  type="email"
+                  id="contactEmail"
+                  name="email"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                  aria-required="true"
+                />
+                <span class="form-error" id="emailError" role="alert">Please enter a valid email address.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="contactMessage">Message</label>
+                <textarea
+                  id="contactMessage"
+                  name="message"
+                  placeholder="Tell me what's on your mind…"
+                  aria-required="true"
+                ></textarea>
+                <span class="form-error" id="msgError" role="alert">Please write a message (at least 10 characters).</span>
+              </div>
+
+              <button type="submit" class="form-submit" id="formSubmit">
+                Send Message →
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================
+       FOOTER
+  =========================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer-social" aria-label="Social links">
+        <a href="mailto:arpitamondal85447@gmail.com" class="social-btn" aria-label="Email Arpita">✉</a>
+        <a href="tel:+919635816967" class="social-btn" aria-label="Call Arpita">☎</a>
+        <a href="https://github.com/crazylipi2026-dot/Todo-app-new" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub">⌥</a>
+      </div>
+
+      <div class="footer-contact" aria-label="Contact details">
+        <a href="mailto:arpitamondal85447@gmail.com">arpitamondal85447@gmail.com</a>
+        <a href="tel:+919635816967">+91 9635816967</a>
+      </div>
+
+      <p class="footer-copy">
+        © 2025 Arpita Mondal. Crafted with <span>♥</span> and curiosity.
+      </p>
+    </div>
+  </footer>
+
+
+  <!-- ===========================
+       JAVASCRIPT
+  =========================== -->
+  <script>
+    /* ========================================================
+       1. PARTICLE CANVAS BACKGROUND
+    ======================================================== */
+    (function initCanvas() {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, particles;
+
+      const isDark = () => document.documentElement.getAttribute('data-theme') !== 'light';
+
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function Particle() {
+        this.reset();
+      }
+
+      Particle.prototype.reset = function() {
+        this.x  = Math.random() * W;
+        this.y  = Math.random() * H;
+        this.r  = Math.random() * 1.6 + 0.4;
+        this.vx = (Math.random() - 0.5) * 0.25;
+        this.vy = (Math.random() - 0.5) * 0.25;
+        this.a  = Math.random() * 0.5 + 0.1;
+      };
+
+      function initParticles() {
+        const count = Math.min(Math.floor(W * H / 8000), 120);
+        particles = Array.from({ length: count }, () => new Particle());
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        const base = isDark() ? '200,169,110' : '200,169,110';
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) p.reset();
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${base},${p.a * (isDark() ? 1 : 0.4)})`;
+          ctx.fill();
+        });
+
+        // draw connecting lines
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 110) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              const alpha = (1 - dist / 110) * (isDark() ? 0.10 : 0.06);
+              ctx.strokeStyle = `rgba(${base},${alpha})`;
+              ctx.lineWidth = 0.8;
+              ctx.stroke();
+            }
+          }
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      resize();
+      initParticles();
+      draw();
+      window.addEventListener('resize', () => { resize(); initParticles(); });
+    })();
+
+
+    /* ========================================================
+       2. THEME TOGGLE
+    ======================================================== */
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+
+    // Persist theme
+    const savedTheme = localStorage.getItem('portfolio_theme') || 'dark';
+    html.setAttribute('data-theme', savedTheme);
+    themeToggle.setAttribute('aria-checked', savedTheme === 'dark' ? 'true' : 'false');
+
+    themeToggle.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('portfolio_theme', next);
+      themeToggle.setAttribute('aria-checked', next === 'dark' ? 'true' : 'false');
+    });
+
+
+    /* ========================================================
+       3. NAVBAR SCROLL BEHAVIOUR + ACTIVE LINKS
+    ======================================================== */
+    const navbar  = document.getElementById('navbar');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+
+    window.addEventListener('scroll', () => {
+      // Scrolled class for blur background
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+
+      // Active link highlighting
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+      });
+
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
+      });
+    }, { passive: true });
+
+
+    /* ========================================================
+       4. MOBILE HAMBURGER MENU
+    ======================================================== */
+    const hamburger    = document.getElementById('hamburger');
+    const mobileNav    = document.getElementById('mobileNav');
+    const mobileOverlay= document.getElementById('mobileOverlay');
+
+    function openMenu() {
+      mobileNav.classList.add('open');
+      mobileOverlay.classList.add('active');
+      hamburger.classList.add('open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      mobileNav.classList.remove('open');
+      mobileOverlay.classList.remove('active');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    hamburger.addEventListener('click', () => {
+      mobileNav.classList.contains('open') ? closeMenu() : openMenu();
+    });
+
+    mobileOverlay.addEventListener('click', closeMenu);
+
+    // Close on link click
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+
+    /* ========================================================
+       5. TYPED HERO TEXT
+    ======================================================== */
+    (function initTyped() {
+      const el = document.getElementById('typed-text');
+      const phrases = [
+        'Political Science Student',
+        'Web Developer in the Making',
+        'Private Tutor & Mentor',
+        'Dancer & Music Lover',
+        'Lifelong Learner',
+      ];
+      let phraseIdx = 0, charIdx = 0, deleting = false;
+      const SPEED_TYPE = 75, SPEED_DEL = 38, PAUSE = 2000;
+
+      function tick() {
+        const phrase = phrases[phraseIdx];
+        if (!deleting) {
+          charIdx++;
+          el.textContent = phrase.slice(0, charIdx);
+          if (charIdx === phrase.length) {
+            deleting = true;
+            setTimeout(tick, PAUSE);
+            return;
+          }
+        } else {
+          charIdx--;
+          el.textContent = phrase.slice(0, charIdx);
+          if (charIdx === 0) {
+            deleting = false;
+            phraseIdx = (phraseIdx + 1) % phrases.length;
+          }
+        }
+        setTimeout(tick, deleting ? SPEED_DEL : SPEED_TYPE);
+      }
+      tick();
+    })();
+
+
+    /* ========================================================
+       6. SCROLL REVEAL ANIMATIONS
+    ======================================================== */
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(el => revealObserver.observe(el));
+
+
+    /* ========================================================
+       7. SKILL BARS (trigger on visibility)
+    ======================================================== */
+    const skillCards = document.querySelectorAll('.skill-card');
+
+    const skillObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.3 });
+
+    skillCards.forEach(card => skillObserver.observe(card));
+
+
+    /* ========================================================
+       8. CONTACT FORM VALIDATION
+    ======================================================== */
+    const form        = document.getElementById('contactForm');
+    const nameInput   = document.getElementById('contactName');
+    const emailInput  = document.getElementById('contactEmail');
+    const msgInput    = document.getElementById('contactMessage');
+    const nameError   = document.getElementById('nameError');
+    const emailError  = document.getElementById('emailError');
+    const msgError    = document.getElementById('msgError');
+    const submitBtn   = document.getElementById('formSubmit');
+    const successMsg  = document.getElementById('successMsg');
+    const formFields  = document.getElementById('formFields');
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function setError(input, errorEl, msg) {
+      input.classList.add('error');
+      errorEl.textContent = msg;
+      errorEl.classList.add('visible');
+    }
+
+    function clearError(input, errorEl) {
+      input.classList.remove('error');
+      errorEl.classList.remove('visible');
+    }
+
+    // Clear errors on input
+    nameInput.addEventListener('input',  () => clearError(nameInput,  nameError));
+    emailInput.addEventListener('input', () => clearError(emailInput, emailError));
+    msgInput.addEventListener('input',   () => clearError(msgInput,   msgError));
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      let valid = true;
+
+      const name  = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const msg   = msgInput.value.trim();
+
+      if (!name) {
+        setError(nameInput, nameError, 'Please enter your name.');
+        valid = false;
+      }
+
+      if (!email || !isValidEmail(email)) {
+        setError(emailInput, emailError, 'Please enter a valid email address.');
+        valid = false;
+      }
+
+      if (!msg || msg.length < 10) {
+        setError(msgInput, msgError, 'Message must be at least 10 characters.');
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Simulate sending (no backend)
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+
+      setTimeout(() => {
+        formFields.style.display = 'none';
+        successMsg.classList.add('visible');
+
+        // Reset after 5s for demo
+        setTimeout(() => {
+          formFields.style.display = 'block';
+          successMsg.classList.remove('visible');
+          form.reset();
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send Message →';
+        }, 5000);
+      }, 1200);
+    });
+
+
+    /* ========================================================
+       9. SMOOTH SCROLL FOR ALL ANCHOR LINKS
+    ======================================================== */
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+
+  <!--
+    ==========================================
+    DEVELOPER NOTES
+    ==========================================
+    Paste Project Link Here  → Line with href="https://todo-app-new-xi-blond.vercel.app/"
+    Paste GitHub Link Here   → Line with href="https://github.com/crazylipi2026-dot/Todo-app-new"
+    ==========================================
+  -->
+
+</body>
+</html>
+
+<!-- Paste Project Link Here -->
+<!-- Paste GitHub Link Here -->
